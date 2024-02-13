@@ -54,6 +54,16 @@ def check_points(p1, p2):
 def check_triangle_points(p1, p2, p3):
     if (check_points(p1, p2) or check_points(p1, p3) or check_points(p3, p2)):
         return False
+    p1p2 = [p2[i] - p1[i] for i in range(2)]
+    p1p3 = [p3[i] - p1[i] for i in range(2)]
+    p2p3 = [p3[i] - p2[i] for i in range(2)]
+
+    lenp1p2 = vector_length(p1p2)
+    lenp2p3 = vector_length(p2p3)
+    lenp1p3 = vector_length(p1p3)
+
+    if abs(lenp1p2 + lenp2p3 - lenp1p3) < EPS or abs(lenp1p3 + lenp2p3 - lenp1p2) < EPS or abs(lenp1p2 + lenp1p3 - lenp2p3) < EPS:
+        return False
     return True
 
 def find_max_triangle(points, criteria):

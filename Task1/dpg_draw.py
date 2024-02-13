@@ -37,9 +37,9 @@ def put_inscribed_circle_on_screen(points, coef, shift, screen_sizes, margins):
 def draw_trianle_info(src_points, screen_coords, screen_sizes, margins, screen_tag):
     xny = [el[1] for el in src_points]
 
-    draw_trianle_point_info(xny[0], xny[1], xny[2], screen_coords[0][1], f"N:{src_points[0][0]:.3f}\n({xny[0][0]:.3f}, {xny[0][1]:.3f})", screen_tag)
-    draw_trianle_point_info(xny[1], xny[0], xny[2], screen_coords[1][1], f"N:{src_points[1][0]:.3f}\n({xny[1][0]:.3f}, {xny[1][1]:.3f})", screen_tag)
-    draw_trianle_point_info(xny[2], xny[1], xny[0], screen_coords[2][1], f"N:{src_points[2][0]:.3f}\n({xny[2][0]:.3f}, {xny[2][1]:.3f})", screen_tag)
+    draw_trianle_point_info(xny[0], xny[1], xny[2], screen_coords[0][1], f"N:{src_points[0][0]}\n({xny[0][0]:.3f}, {xny[0][1]:.3f})", screen_tag)
+    draw_trianle_point_info(xny[1], xny[0], xny[2], screen_coords[1][1], f"N:{src_points[1][0]}\n({xny[1][0]:.3f}, {xny[1][1]:.3f})", screen_tag)
+    draw_trianle_point_info(xny[2], xny[1], xny[0], screen_coords[2][1], f"N:{src_points[2][0]}\n({xny[2][0]:.3f}, {xny[2][1]:.3f})", screen_tag)
 
 
 def draw_trianle_point_info(p1, p2, p3, screen_p1, mess, screen_tag):
