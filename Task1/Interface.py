@@ -1,7 +1,7 @@
 import dearpygui.dearpygui as dpg
 import dpg_draw as dpgdraw
 import trimath as tm
-
+TRIANGLE = None
 WINDOW_SIZES = (2400, 1400)
 INPUT_SIZES = (1000, WINDOW_SIZES[1]/2)
 DRAW_SIZES = (WINDOW_SIZES[0] - INPUT_SIZES[0], WINDOW_SIZES[1])
@@ -37,17 +37,19 @@ def do_business():
         log("Недостаточно точек.")
         return
     triangle = tm.find_max_triangle(list(zip(range(1, len(POINTS_LIST) + 1), POINTS_LIST)), tm.diff_triange_inscribed_circle)
+    TRIANGLE = triangle
     if (not triangle):
         log("Не построить треугольник по заданным точкам.")
         return
 
-    
+    log("")
     log("Треугольник с максимальной разницей:")
     print(triangle)
     for p in triangle:
         log(f"{p[0]}:({p[1][0]:.3f}, {p[1][1]:.3f})")
     log(f"Площадь треугольника: {tm.triangle_square(*[i[1] for i in triangle]):.3f}")
     log(f"Площадь вписанной окружностью: {tm.inscribed_circle_square(*[i[1] for i in triangle]):.3f}")
+    log(f"Разность площадей: {abs(tm.inscribed_circle_square(*[i[1] for i in triangle]) - tm.triangle_square(*[i[1] for i in triangle])):.3f}")
     
     clean_item("draww")
     print(triangle)
@@ -62,6 +64,7 @@ def add_point():
     redraw_table(len(POINTS_LIST) - 1)
 
 def delete_point():
+    clean_item("draww")
     n = dpg.get_value("n_input")
     if len(POINTS_LIST) < n or n <= 0:
         log("Invalid point number.")
@@ -72,6 +75,7 @@ def delete_point():
 
 
 def modify_point():
+    clean_item("draww")
     n = dpg.get_value("n_input")
     if len(POINTS_LIST) < n or n <= 0:
         log("Invalid point number.")
@@ -79,10 +83,13 @@ def modify_point():
     x = dpg.get_value("x_input")
     y = dpg.get_value("y_input")
 
+
     POINTS_LIST[n - 1] = (x, y)
     redraw_table(len(POINTS_LIST))
 
 def clear_points():
+    TRIANGLE = None
+    clean_item("draww")
     n = len(POINTS_LIST)
     POINTS_LIST.clear()
     redraw_table(n)
