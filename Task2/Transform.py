@@ -95,6 +95,10 @@ class ActionsCollection(TransformAction):
         self.actions.pop(ind)
         self.matrix = None
     
+    def clear(self):
+        self.actions.clear()
+        self.matrix = None
+    
 
 
 if __name__ == '__main__':

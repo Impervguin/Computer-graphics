@@ -1,5 +1,55 @@
 import dearpygui.dearpygui as dpg
 
+# center_x, center_y, angle, screen
+ROTATE_ACTION = None
+
+# shift_x, shift_y
+SHIFT_ACTION = None
+
+# center_x, center_y, scale_x, scale_y
+SCALE_ACTION = None
+
+
+CLEAR_ACTION = None
+
+UNDO_ACTION = None
+
+def clean_item(item_tag):
+    for num in dpg.get_item_children(item_tag):
+        for el in dpg.get_item_children(item_tag)[num]:
+            dpg.delete_item(el)
+
+def shift_callback():
+    shift_x = dpg.get_value("ShiftX")
+    shift_y = dpg.get_value("ShiftY")
+    clean_item(MODIFIED)
+    
+    dpg.set_value(LOG_TEXT, SHIFT_ACTION(shift_x, shift_y, MODIFIED))
+
+def scale_callback():
+    center_x = dpg.get_value("ScaleCenterX")
+    center_y = dpg.get_value("ScaleCenterY")
+    scale_x = dpg.get_value("ScaleX")
+    scale_y = dpg.get_value("ScaleY")
+
+    clean_item(MODIFIED)
+    dpg.set_value(LOG_TEXT, SCALE_ACTION(center_x, center_y, scale_x, scale_y, MODIFIED))
+    
+
+def rotate_callback():
+    center_x = dpg.get_value("RotateCenterX")
+    center_y = dpg.get_value("RotateCenterY")
+    angle = dpg.get_value("RotateAngle")
+    clean_item(MODIFIED)
+    dpg.set_value(LOG_TEXT, ROTATE_ACTION(center_x, center_y, angle, MODIFIED))
+
+def undo_callback():
+    clean_item(MODIFIED)
+    dpg.set_value(LOG_TEXT, UNDO_ACTION(MODIFIED))
+
+def clear_callback():
+    clean_item(MODIFIED)
+    dpg.set_value(LOG_TEXT, CLEAR_ACTION(MODIFIED))
 
 # Minimum sizes of blocks in window
 MINDRAW_BLOCK = (2000, 1000)
@@ -69,8 +119,8 @@ def build_ui():
     with dpg.window(tag=LOG, label=LOG):
         dpg.add_input_text(multiline=True, label=LOG_TEXT, tag=LOG_TEXT, readonly=True, pos=(100, 100), width=MINLOG[0] - 300, height=MINLOG[1] - 300)
         with dpg.group(tag="LogButtonGroup", horizontal=True, horizontal_spacing=(MINLOG[0] - dpg.get_item_height(LOG_TEXT) - 300), pos=(100, MINLOG[1] - 75)):
-            dpg.add_button(tag="UndoLog", label="Отменить", height=50, width=150)
-            dpg.add_button(tag="ClearLog", label="Очистить", height=50, width=150)
+            dpg.add_button(tag="UndoLog", label="Отменить", height=50, width=150, callback=undo_callback)
+            dpg.add_button(tag="ClearLog", label="Очистить", height=50, width=150, callback=clear_callback)
     with dpg.window(tag=SCALE, label=SCALE):
         with dpg.group(indent=50):
             with dpg.group():
@@ -85,7 +135,7 @@ def build_ui():
             with dpg.group():
                 dpg.add_text("Масштаб по y:")
                 dpg.add_input_double(tag="ScaleY")
-        dpg.add_button(tag="ScaleButton", label="Масштабировать", width=300, height=50, pos=(50, MINSCALE[1] - 100))
+        dpg.add_button(tag="ScaleButton", label="Масштабировать", width=300, height=50, pos=(50, MINSCALE[1] - 100), callback=scale_callback)
             
     with dpg.window(tag=SHIFT, label=SHIFT):
         with dpg.group(indent=50):
@@ -95,7 +145,7 @@ def build_ui():
             with dpg.group():
                 dpg.add_text("Сдвиг по y:")
                 dpg.add_input_double(tag="ShiftY")
-        dpg.add_button(tag="ShiftButton", label="Сдвинуть", width=300, height=50, pos=(50, MINSHIFT[1] - 100))
+        dpg.add_button(tag="ShiftButton", label="Сдвинуть", width=300, height=50, pos=(50, MINSHIFT[1] - 100), callback=shift_callback)
     
     with dpg.window(tag=ROTATE, label=ROTATE):
         with dpg.group(indent=50):
@@ -108,7 +158,7 @@ def build_ui():
             with dpg.group():
                 dpg.add_text("Угол поворота\nпо часовой стрелке:")
                 dpg.add_input_double(tag="RotateAngle")
-        dpg.add_button(tag="RotateButton", label="Повернуть", width=300, height=50, pos=(50, MINROTATE[1] - 100))
+        dpg.add_button(tag="RotateButton", label="Повернуть", width=300, height=50, pos=(50, MINROTATE[1] - 100), callback=rotate_callback)
     position_resize(MINWINDOW)
 
 

@@ -13,7 +13,8 @@ class DrawObject:
             p.shift(*start_shift)
     
     def dpgdraw(self, screen_tag):
-        dpg.draw_polygon([list(map(int, p.get_tuple())) for p in self.points], parent=screen_tag)
+        if len(self.points) > 0:
+            dpg.draw_polygon([list(map(int, p.get_tuple())) for p in self.points], parent=screen_tag)
 
     def transform(self, matrix):
         for p in self.points:
@@ -35,7 +36,10 @@ class DrawCircle(DrawObject):
 
 
 class DrawAstroid(DrawObject):
-    def __init__(self, start_shift, amplitude, step=DEFAULT_STEP) -> None:
+    def __init__(self, start_shift, amplitude, step=DEFAULT_STEP, with_center=False) -> None:
+        self.center = None
+        if with_center:
+            self.center = Point(*start_shift)
         points = []
         now_angle = 0
         while now_angle < m.pi * 2:
@@ -44,11 +48,29 @@ class DrawAstroid(DrawObject):
             points.append(Point(x, y))
             now_angle += step
         super().__init__(start_shift, *points)
+    
+    def dpgdraw(self, screen_tag):
+        super().dpgdraw(screen_tag)
+        if self.center:
+            dpg.draw_circle((self.center.x, self.center.y), 2, parent=screen_tag, thickness=5)
+            dpg.draw_text((self.center.x, self.center.y), f"({self.center.x:.3g}, {self.center.y:.3g})", parent=screen_tag, size=25)
+    
+    def transform(self, matrix):
+        super().transform(matrix)
+        if (self.center):
+            self.center.transform(matrix)
+    
+    def copy(self):
+        ast = DrawAstroid((0,0), 100)
+        ast.center = self.center.copy()
+        ast.points = [p.copy() for p in self.points]
+        return ast
+
 
 
 class DrawCollection:
     def __init__(self, *objs) -> None:
-        self.objs = objs
+        self.objs = list(objs)
     
     def dpgdraw(self, screen_tag):
         for obj in self.objs:
@@ -61,6 +83,13 @@ class DrawCollection:
     
     def copy(self):
         return DrawCollection(*[obj.copy() for obj in self.objs])
+
+    def append(self, other):
+        # print(isinstance(other, DrawObject))
+        if isinstance(other, DrawObject):
+            self.objs.append(other)
+            return
+        raise TypeError
 
 
 
