@@ -22,6 +22,9 @@ def clean_item(item_tag):
 def shift_callback():
     shift_x = dpg.get_value("ShiftX")
     shift_y = dpg.get_value("ShiftY")
+    if abs(shift_x) < 0.5 or abs(shift_y) < 0.5:
+        dpg.draw_text((300, 700), "Сдвиг не может быть меньше 0.5.", parent=MODIFIED, size=25)
+        return
     clean_item(MODIFIED)
     
     dpg.set_value(LOG_TEXT, SHIFT_ACTION(shift_x, shift_y, MODIFIED))
@@ -31,6 +34,9 @@ def scale_callback():
     center_y = dpg.get_value("ScaleCenterY")
     scale_x = dpg.get_value("ScaleX")
     scale_y = dpg.get_value("ScaleY")
+    if abs(scale_x) < 0.001 or abs(scale_y) < 0.001:
+        dpg.draw_text((300, 700), "Масштаб не может нулевым.", parent=MODIFIED, size=25)
+        return
 
     clean_item(MODIFIED)
     dpg.set_value(LOG_TEXT, SCALE_ACTION(center_x, center_y, scale_x, scale_y, MODIFIED))
@@ -40,6 +46,11 @@ def rotate_callback():
     center_x = dpg.get_value("RotateCenterX")
     center_y = dpg.get_value("RotateCenterY")
     angle = dpg.get_value("RotateAngle")
+
+    if abs(angle) < 0.001:
+        dpg.draw_text((300, 700), "Угол поворота не может быть нулевым.", parent=MODIFIED, size=25)
+        return
+
     clean_item(MODIFIED)
     dpg.set_value(LOG_TEXT, ROTATE_ACTION(center_x, center_y, angle, MODIFIED))
 
