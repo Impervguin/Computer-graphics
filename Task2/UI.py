@@ -22,7 +22,7 @@ def clean_item(item_tag):
 def shift_callback():
     shift_x = dpg.get_value("ShiftX")
     shift_y = dpg.get_value("ShiftY")
-    if abs(shift_x) < 0.5 or abs(shift_y) < 0.5:
+    if abs(shift_x) < 0.5 and abs(shift_y) < 0.5:
         dpg.draw_text((300, 700), "Сдвиг не может быть меньше 0.5.", parent=MODIFIED, size=25)
         return
     clean_item(MODIFIED)
@@ -167,7 +167,7 @@ def build_ui():
                 dpg.add_text("Центр поворота по y:")
                 dpg.add_input_double(tag="RotateCenterY")
             with dpg.group():
-                dpg.add_text("Угол поворота\nпо часовой стрелке:")
+                dpg.add_text("Угол поворота против\nчасовой стрелки:")
                 dpg.add_input_double(tag="RotateAngle")
         dpg.add_button(tag="RotateButton", label="Повернуть", width=300, height=50, pos=(50, MINROTATE[1] - 100), callback=rotate_callback)
     position_resize(MINWINDOW)

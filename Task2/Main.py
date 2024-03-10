@@ -9,6 +9,11 @@ UI.SCALE_ACTION = oui.scale
 UI.CLEAR_ACTION = oui.clear
 UI.UNDO_ACTION = oui.undo
 
+# CENTER_X = 500
+# CENTER_Y = 500
+# ASTR_RAD = 150
+# CIRCLE_RAD =35
+
 oui.ORIGINAL.append(do.DrawAstroid((500, 500), 150, with_center=True))
 oui.ORIGINAL.append(do.DrawCircle((500, 500), 35))
 oui.ORIGINAL.append(do.DrawObject((0, 0), Point.Point(350, 500), Point.Point(350, 700), Point.Point(650, 700), Point.Point(650, 500)))
