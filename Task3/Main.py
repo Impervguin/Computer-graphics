@@ -1,10 +1,15 @@
 from DrawField import *
 from Segment import *
 import sys
+import pyqtgraph as pg
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel
 from Ui import Ui_MainWindow
-
+TIME_TEST_P1 = Point(100, 100)
+TIME_TEST_P2 = Point(1300, 1000)
+STEP_TEST_CENTER = Point(1000, 1000)
+STEP_TEST_LEN = 1500
+NANO_TO_SEC = 1e9
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -17,6 +22,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.pen = (0, 0, 0)
         self.prepareScreen()
         self.connectSlots()
+        self.drawTimeGraph()
+        self.drawStepsGraphs()
 
     def getSegmentType(self):
         checked = None
@@ -123,6 +130,105 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.DrawColorPicker.clicked.connect(self.penColorSlot)
         self.BackColorPicker.clicked.connect(self.backColorSlot)
         self.SpectreButton.clicked.connect(self.spectreSlot)
+    
+    def drawTimeGraph(self):
+        tmp = DrawField(self.DrawImage.size().width(), self.DrawImage.size().height())
+        algos = [
+            LibSegment,
+            DDA,
+            BrezenkhemInteger,
+            BrezenkhemFloat,
+            BrezenkhemSmooth,
+            WU
+        ]
+
+        segs = [seg(TIME_TEST_P1, TIME_TEST_P2) for seg in algos]
+        y = [seg.timeDraw(tmp, (0, 0, 0)) / NANO_TO_SEC for seg in segs]
+        xlab = [str(seg) for seg in segs]
+        xval = list(range(1, len(algos) + 1))
+        
+        ticks=[]
+        for i, item in enumerate(xlab):
+            ticks.append( (xval[i], item) )
+        ticks = [ticks]
+        b1 = pg.BarGraphItem(x=xval, height=y, width=0.7)
+        self.TimeGraph.addItem(b1)
+        
+        ax = self.TimeGraph.getAxis("bottom")
+        ax.setTicks(ticks)
+        font=QFont("JetBrains", 17)
+        ax.setTickFont(font)
+        self.TimeGraph.setLabel("left", "Время в секундах")
+        self.TimeGraph.getAxis("left").label.setFont(font)
+        self.TimeGraph.setTitle("<font size='17' family='JetBrains'> Время вычисления разными алгоритмами </font>")
+        # self.TimeGraph.titleLabel.setFont(font)
+    
+
+    def drawStepsGraphs(self):
+        algos = [
+            DDA,
+            BrezenkhemInteger,
+            BrezenkhemFloat,
+            BrezenkhemSmooth,
+            WU
+        ]
+
+        graphs = [
+            self.DDAGraph,
+            self.BrezenkhemIntGraph,
+            self.BrezenkhemFloatGraph,
+            self.BrezenkhemSmoothGraph,
+            self.WUGraph
+        ]
+        angles = [i for i in range(0, 90, 2)]
+        steps = [[] for _ in range(len(algos))]
+
+        for angle in angles:
+            p2 = Point(STEP_TEST_CENTER[0] + STEP_TEST_LEN * m.cos(m.radians(angle)), STEP_TEST_CENTER[1] + STEP_TEST_LEN * m.sin(m.radians(angle)))
+            for i in range(len(algos)):
+                g = algos[i](STEP_TEST_CENTER, p2)
+                steps[i].append(g.getSteps())
+        
+        pen = pg.mkPen("c", width=3)
+
+        symbs = [
+            ("c", "t"),
+            ("b", "d"),
+            ("g", "+"),
+            ("m", "h"),
+            ("r", "p"),
+
+        ] 
+        for i in range(len(algos)):
+            graphs[i].plot(angles, steps[i], symbol=symbs[i][1], symbolSize=12, symbolBrush=symbs[i][0], pen=pen)
+            self.AllGraph.plot(angles, steps[i], symbol=symbs[i][1], symbolSize=12, symbolBrush=symbs[i][0], pen=pen)
+            graphs[i].setLabel("top", str(algos[i](STEP_TEST_CENTER, p2)))
+            graphs[i].setLabel("bottom", "Угол с ox")
+            graphs[i].setLabel("left", "Ступеньки")
+            font=QFont("JetBrains", 17)
+            graphs[i].getAxis("bottom").label.setFont(font)
+            graphs[i].getAxis("left").label.setFont(font)
+            graphs[i].getAxis("top").label.setFont(font)
+        
+        self.AllGraph.setLabel("top", f"Кол-во ступенек отрезка длины {STEP_TEST_LEN}")
+        self.AllGraph.setLabel("bottom", "Угол с ox")
+        self.AllGraph.setLabel("left", "Ступеньки")
+        self.AllGraph.getAxis("bottom").label.setFont(font)
+        self.AllGraph.getAxis("left").label.setFont(font)
+        self.AllGraph.getAxis("top").label.setFont(font)
+
+
+        
+        # self.DDAGraph.setLabel("bottom", "ЦДА")
+        # ax.text = "ЦДА"
+        # self.DDAGraph.text = "DDA"
+        
+
+
+        
+        
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

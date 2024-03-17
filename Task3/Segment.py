@@ -70,7 +70,38 @@ class DDA(Segment):
             y += dy
         
         return points
+    
+    def getSteps(self) -> int:
+        x1, y1 = self.p1
+        x2, y2 = self.p2
+        if x1  == x2 and y1 == y2:
+            return 0
 
+        dx = abs(x2 - x1)
+        dy = abs(y2 - y1)
+
+        length = max(dx, dy)
+
+        dx = (x2 - x1) / length
+        dy = (y2 - y1) / length
+
+        x = round(x1)
+        y = round(y1)
+
+        xp, yp = x, y
+        steps = 0
+        for i in range(int(length) + 1):
+            x += dx
+            y += dy
+            if round(x) != xp and round(y) != yp:
+                steps += 1
+                xp = round(x)
+                yp = round(y)
+        
+        return steps
+    
+    def __str__(self):
+        return "ЦДА"
 
 class BrezenkhemFloat(Segment):
     def _draw(self) -> list[Point]:
@@ -113,6 +144,54 @@ class BrezenkhemFloat(Segment):
         
         return points
 
+    def getSteps(self) -> int:
+        x1, y1 = map(round, self.p1)
+        x2, y2 = map(round, self.p2)
+        if x1 == x2 and y1 == y2:
+            return 0
+
+        sx = sign(x2 - x1)
+        sy = sign(y2 - y1)
+
+        dy = abs(y2 - y1)
+        dx = abs(x2 - x1)
+
+        switch = False
+        if (dy > dx):
+            dx, dy = dy, dx
+            switch = True
+        
+        err = dy / dx - 0.5
+
+        x = x1
+        y = y1
+
+        xb, yb = x, y
+        steps = 0
+
+        for _ in range(dx):
+            while (err >= 0):
+                if (switch):
+                    x += sx
+                else:
+                    y += sy
+                err -= 1
+            if (switch):
+                y += sy
+            else:
+                x += sx
+            err += dy / dx
+
+            if (xb != x and  yb != y):
+                steps += 1
+                xb = x
+                yb = y
+
+        return steps
+    
+    def __str__(self):
+        return "Вещественный брезенхем"
+
 class BrezenkhemInteger(Segment):
     def _draw(self) -> list[Point]:
         points = []
@@ -154,6 +233,55 @@ class BrezenkhemInteger(Segment):
         
         return points
 
+    def getSteps(self) -> int:
+        x1, y1 = map(round, self.p1)
+        x2, y2 = map(round, self.p2)
+        if x1 == x2 and y1 == y2:
+            return [self.p1]
+
+        sx = sign(x2 - x1)
+        sy = sign(y2 - y1)
+
+        dy = abs(y2 - y1)
+        dx = abs(x2 - x1)
+
+        switch = False
+        if (dy > dx):
+            dx, dy = dy, dx
+            switch = True
+        
+        err = 2 * dy - dx
+
+        x = x1
+        y = y1
+
+        xb, yb = x, y
+        steps = 0
+
+        for _ in range(dx):
+
+            while (err >= 0):
+                if (switch):
+                    x += sx
+                else:
+                    y += sy
+                err -= 2 * dx
+            if (switch):
+                y += sy
+            else:
+                x += sx
+            err += 2 * dy
+
+            if (xb != x and  yb != y):
+                steps += 1
+                xb = x
+                yb = y
+        
+        return steps
+
+    def __str__(self):
+        return "Целочисленный брезенхем"
+
 class BrezenkhemSmooth(Segment):
     def _draw(self) -> list[Point]:
         points = []
@@ -193,6 +321,55 @@ class BrezenkhemSmooth(Segment):
                 y += sy
                 e -= w
         return points
+
+    def getSteps(self) -> int:
+        I = 100
+        x1, y1 = map(round, self.p1)
+        x2, y2 = map(round, self.p2)
+        if x1 == x2 and y1 == y2:
+            return [self.p1]
+        
+        sx = sign(x2 - x1)
+        sy = sign(y2 - y1)
+        dy = abs(y2 - y1)
+        dx = abs(x2 - x1)
+        
+        switch = False
+        if dy >= dx:
+            dx, dy = dy, dx
+            switch = True
+        
+        tg = dy / dx * I
+        e = I / 2 
+        w = I - tg
+        
+        x = x1
+        y = y1
+
+        xb, yb = x, y
+        steps = 0
+        
+        for _ in range(dx):
+            if e < w:
+                if switch:
+                    y += sy 
+                else:
+                    x += sx 
+                e += dy / dx * I
+            elif e >= w:
+                x += sx
+                y += sy
+                e -= w
+
+            if (xb != x and  yb != y):
+                steps += 1
+                xb = x
+                yb = y
+
+        return steps
+
+    def __str__(self):
+        return "Брезенхем со сглаживанием"
         
 class WU(Segment):
     def _draw(self) -> list[Point]:
@@ -240,10 +417,70 @@ class WU(Segment):
                 y += tg
 
         return points
+    
+    def getSteps(self) -> int:
+        x1, y1 = map(round, self.p1)
+        x2, y2 = map(round, self.p2)
+        if x1 == x2 and y1 == y2:
+            return [self.p1]
+        
+         
+        switch = False
+        if abs(y2 - y1) > abs(x2 - x1):
+            x1, y1 = y1, x1
+            x2, y2 = y2, x2
+            switch = True
+        if x1 > x2:
+            x1, x2 = x2, x1
+            y1, y2 = y2, y1
+        
+        dx = x2 - x1
+        dy = y2 - y1
+
+        if dx == 0:
+            tg = 1
+        else:
+            tg = dy / dx
+        
+        xend = round(x1)
+        yend = y1 + tg * (xend - x1)
+        xpx1 = xend
+        y = yend + tg
+
+        xend = int(x2 + 0.5)
+        xpx2 = xend
+
+        xb = xpx1
+        yb = y1
+        steps = 0
+
+        if (switch):
+            for x in range(xpx1, xpx2):
+                if (xb != x and  yb != round(y)):
+                    steps += 1
+                    xb = x
+                    yb = round(y)
+                y += tg
+        else:
+            for x in range(xpx1, xpx2):
+                if (xb != x and  yb != round(y)):
+                    steps += 1
+                    xb = x
+                    yb = round(y)
+                y += tg
+
+
+        return steps
+
+    def __str__(self):
+        return "ВУ"
 
 class LibSegment(Segment):
     def draw(self, screen : DrawField, color=(0, 0, 0)):
         screen.drawLine(self.p1, self.p2, color)
+    
+    def __str__(self):
+        return "Библиотечный"
         
 
         
