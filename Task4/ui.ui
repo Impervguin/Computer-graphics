@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>2200</width>
+    <height>1500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="Tabs">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>2200</width>
+      <height>1500</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="tabsClosable">
+     <bool>false</bool>
+    </property>
+    <widget class="QWidget" name="Modeling">
+     <attribute name="title">
+      <string>Моделирование</string>
+     </attribute>
+     <widget class="QLabel" name="DrawImage">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>1480</width>
+        <height>1420</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="Gr">
+      <property name="geometry">
+       <rect>
+        <x>1510</x>
+        <y>10</y>
+        <width>680</width>
+        <height>1420</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Управление</string>
+      </property>
+      <widget class="QGroupBox" name="Algo">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>651</width>
+         <height>301</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Алгоритмы</string>
+       </property>
+       <widget class="QRadioButton" name="LibraryButton">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>50</y>
+          <width>621</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Библиотечный алгоритм</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="CanonicButton">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>100</y>
+          <width>621</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Канонический алгоритм</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="ParametricButton">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>621</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Параметрический алгоритм</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="BrezButton">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>200</y>
+          <width>621</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Алгоритм Брезенхема</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="MidpointButton">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>250</y>
+          <width>621</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Алгоритм средней точки</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QDoubleSpinBox" name="XStartBox">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>400</y>
+         <width>231</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>2000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1000.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="RadiusBox">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>530</y>
+         <width>231</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>2000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>200.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="YStartBox">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>400</y>
+         <width>231</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>2000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1000.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="CircleButton">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>720</y>
+         <width>231</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Окружность</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="StepBox">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>810</y>
+         <width>231</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>360</number>
+       </property>
+       <property name="value">
+        <number>5</number>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SpectreCircleButton">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>1100</y>
+         <width>291</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Спектр окружностей</string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="SpectreRadiusBox">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>910</y>
+         <width>241</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>300.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="ClearScreen">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>1350</y>
+         <width>421</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Очистить экран</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BackColorPicker">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>1200</y>
+         <width>311</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Выбрать цвет фона</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="DrawColorPicker">
+       <property name="geometry">
+        <rect>
+         <x>350</x>
+         <y>1200</y>
+         <width>311</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Выбрать цвет отрезка</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>360</y>
+         <width>231</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Х центра</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_4">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>360</y>
+         <width>231</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Y центра</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_5">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>780</y>
+         <width>231</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Шаг длины</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_6">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>880</y>
+         <width>261</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Начальный радиус</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="EllipsButton">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>720</y>
+         <width>231</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Эллипс</string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="WidthBox">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>530</y>
+         <width>231</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>2000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>200.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>490</y>
+         <width>231</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Ширина</string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="HeightBox">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>640</y>
+         <width>231</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>2000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>200.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_9">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>600</y>
+         <width>231</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Высота</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_10">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>780</y>
+         <width>221</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Кол-во фигур</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="FigurenumBox">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>810</y>
+         <width>231</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <number>360</number>
+       </property>
+       <property name="value">
+        <number>5</number>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_7">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>490</y>
+         <width>231</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Радиус</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_8">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>880</y>
+         <width>261</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Начальная ширина</string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="SpectreWidthBox">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>910</y>
+         <width>241</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>300.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_11">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>980</y>
+         <width>261</width>
+         <height>34</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Начальная высота</string>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="SpectreHeightBox">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>1010</y>
+         <width>241</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>300.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="SpectreEllipsButton">
+       <property name="geometry">
+        <rect>
+         <x>350</x>
+         <y>1100</y>
+         <width>301</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Спектр эллипсов</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Time">
+     <attribute name="title">
+      <string>Замеры окружность</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="Steps">
+     <attribute name="title">
+      <string>Замеры эллипс</string>
+     </attribute>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
