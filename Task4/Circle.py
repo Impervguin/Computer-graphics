@@ -11,24 +11,21 @@ class Circle:
     
     def draw(self, screen : DrawField, color=(0, 0, 0)):
         points = self._draw()
+        for p in points:
+            self.DrawPixel(screen, p[0], p[1], color_intensity(color, p.intensity))
         
     
     def _draw(self) -> list[Point]:
         pass
 
     def drawSpectre(self, step, cnt, screen : DrawField, color=(0,0,0)):
-        points = []
         s_r = self.r
         i = 0
         while i < cnt:
-            ps = self._draw()
-            points.extend(ps)
-            for p in points:
-                self.DrawPixel(screen, p[0], p[1], color_intensity(color, p.intensity))
+            self.draw(screen, color)
             self.r += step
             i += 1
         self.r = s_r
-        return points
 
 
     def DrawPixel(self, screen : DrawField, x, y, color=(0,0,0)):
@@ -97,6 +94,9 @@ class BrezenhemCircle(Circle):
             p.shift(mathRound(c[0]), mathRound(c[1]))
         self.shiftCenter(c[0], c[1])
         return points
+    
+    def __str__(self) -> str:
+        return "Брезенхем"
 
 
 class MidPointCircle(Circle):
@@ -129,6 +129,9 @@ class MidPointCircle(Circle):
             p.shift(int(c[0]), int(c[1]))
         self.shiftCenter(c[0], c[1])
         return points
+    
+    def __str__(self) -> str:
+        return "Средней точки"
 
 
 
@@ -149,6 +152,9 @@ class CanonicCircle(Circle):
             points.extend(self.getSymmetricPixels(x, y))
 
         return points
+    
+    def __str__(self) -> str:
+        return "Канонический"
 
 
 class ParametricCircle(Circle):
@@ -166,6 +172,12 @@ class ParametricCircle(Circle):
 
         return points
 
+    def __str__(self) -> str:
+        return "Параметрический"
+
 class LibraryCircle(Circle):
     def draw(self, screen : DrawField, color=(0, 0, 0)):
         screen.drawEllipse(self.c, self.r, self.r, color)
+    
+    def __str__(self) -> str:
+        return "Библиотечный"

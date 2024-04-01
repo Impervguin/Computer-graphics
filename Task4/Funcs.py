@@ -13,3 +13,8 @@ def mathRound(x):
     if x - i >= 0.5:
         return i + 1
     return i
+
+def average(lst):
+    if (len(lst)) == 0:
+        return 0
+    return sum(lst) / len(lst)

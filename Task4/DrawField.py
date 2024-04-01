@@ -50,6 +50,6 @@ class DrawField:
     def drawEllipse(self, c : Point, w, h, color):
         painter = QPainter(self.im)
         painter.setPen(QColor(qRgb(*color)))
-        painter.drawEllipse(mathRound(c[0]), mathRound(c[1]), mathRound(w), mathRound(h))
+        painter.drawEllipse(mathRound(c[0] - w), mathRound(c[1] - h), mathRound(w * 2), mathRound(h * 2))
     
 

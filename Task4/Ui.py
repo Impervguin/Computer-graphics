@@ -202,4 +202,4 @@ class Ui_MainWindow(object):
         self.SpectreEllipsButton.setText(_translate("MainWindow", "Спектр эллипсов"))
         self.Tabs.setTabText(self.Tabs.indexOf(self.Modeling), _translate("MainWindow", "Моделирование"))
         self.Tabs.setTabText(self.Tabs.indexOf(self.Time), _translate("MainWindow", "Замеры окружность"))
-        self.Tabs.setTabText(self.Tabs.indexOf(self.TimellipsGraph), _translate("MainWindow", "Замеры эллипс"))
+        self.Tabs.setTabText(self.Tabs.indexOf(self.Timellips), _translate("MainWindow", "Замеры эллипс"))

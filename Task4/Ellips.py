@@ -18,17 +18,17 @@ class Ellips:
     def _draw(self) -> list[Point]:
         pass
 
-    # def drawSpectre(self, step, screen : DrawField, color=(0,0,0)):
-    #     r = self.r
-    #     s_p2 = self.p2
-    #     a = 0
-    #     l = ((self.p1[0] - self.p2[0]) ** 2 + (self.p1[1] - self.p2[0]) ** 2) ** 0.5
-    #     while a < 360:
-    #         self.p2 = Point(l * m.cos(m.radians(a)) + self.p1[0], l * m.sin(m.radians(a)) + self.p1[1])
-    #         self.draw(screen, color)
-    #         a += step
-    #     self.p2 = s_p2
-
+    def drawSpectre(self, step, cnt, screen : DrawField, color=(0,0,0)):
+        s_w = self.w
+        s_h = self.h
+        i = 0
+        while i < cnt:
+            self.draw(screen, color)
+            self.h += step
+            self.w += step
+            i += 1
+        self.w = s_w
+        self.h = s_h
 
     def DrawPixel(self, screen : DrawField, x, y, color=(0,0,0)):
         screen.SetColor(color)
@@ -77,6 +77,9 @@ class CanonicEllips(Ellips):
 
         return points
 
+    def __str__(self) -> str:
+        return "Канонический"
+
 class ParametricEllips(Ellips):
     def _draw(self) -> list[Point]:
         if self.w > self.h:
@@ -93,6 +96,9 @@ class ParametricEllips(Ellips):
             a += step
         return points
 
+    def __str__(self) -> str:
+        return "Параметрический"
+    
 class BrezenhemEllips(Ellips):
     def _draw(self) -> list[Point]:
         points = []
@@ -111,19 +117,18 @@ class BrezenhemEllips(Ellips):
         re = sqrh + sqrw * (h - 1) ** 2 - sqrw * sqrh
         
         while y >= 0:
-            print(re)
             if re < 0:
+                d = re + sqrh * (x + 1) ** 2 - sqrw * sqrh + sqrw * y ** 2
                 x += 1
-                d = -2 * sqrw * y + sqrw
                 if d >= 0:
                     y -= 1
                     re += 2 * sqrh * x - 2 * sqrw * y + sqrw + sqrh
                 else:
                     re += 2 * sqrh * x + sqrh
             elif re > 0:
+                d = re + sqrw * (y - 1) ** 2 - sqrw * sqrh + sqrh * x ** 2
                 y -= 1
-                d = 2 * sqrh * x + sqrh
-                if d >= 0:
+                if d <= 0:
                     x += 1
                     re += 2 * sqrh * x - 2 * sqrw * y + sqrw + sqrh
                 else:
@@ -138,6 +143,9 @@ class BrezenhemEllips(Ellips):
             p.shift(int(c[0]), int(c[1]))
         self.shiftCenter(c[0], c[1])
         return points
+
+    def __str__(self) -> str:
+        return "Брезенхем"
 
 class MidPointEllips(Ellips):
     def _draw(self) -> list[Point]:
@@ -180,7 +188,13 @@ class MidPointEllips(Ellips):
 
         return points
 
+    def __str__(self) -> str:
+        return "Средней точки"
+
 
 class LibraryEllips(Ellips):
     def draw(self, screen: DrawField, color=(0, 0, 0)):
         screen.drawEllipse(self.c, self.w, self.h, color)
+    
+    def __str__(self) -> str:
+        return "Библиотечный"
