@@ -7,12 +7,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel
 from Ui import Ui_MainWindow
 from Funcs import average
+
+
 TIME_TEST_C = Point(1201, 801)
 TIME_TEST_R = 800
 TIME_TEST_W = 1200
 TIME_TEST_H = 700
-STEP_TEST_CENTER = Point(1000, 1000)
-STEP_TEST_LEN = 1500
 NANO_TO_SEC = 1e9
 TIME_TEST_CNT = 10
 
@@ -29,8 +29,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.pen = (0, 0, 0)
         self.prepareScreen()
         self.connectSlots()
-        self.drawTimeGraphCircle()
-        self.drawTimeGraphEllips()
+        # self.drawTimeGraphCircle()
+        # self.drawTimeGraphEllips()
 
     def getCircleType(self):
         checked = None
@@ -76,6 +76,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         cnt = self.FigurenumBox.value()
 
         self.drawCircleSpectre(sr, step, cnt, self.getCircleType(), self.pen)
+        self.circlesSpectres.append((sr, step, cnt, self.getCircleType(), self.pen))
         self.update()
 
     def drawCircleSpectre(self, sr, step, cnt, type, color=(0,0,0)):
@@ -89,6 +90,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         cnt = self.FigurenumBox.value()
 
         self.drawEllipsSpectre(sw, sh, step, cnt, self.getEllipsType(), self.pen)
+        self.ellipsesSpectres.append((sw, sh, step, cnt, self.getEllipsType(), self.pen))
         self.update()
 
     def drawEllipsSpectre(self, sw, sh, step, cnt, type, color=(0,0,0)):
@@ -141,11 +143,16 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
     def redrawCircles(self):
         for c, color in self.circles:
             c.draw(self.draw, color)
+        for sr, step, cnt, type, color in self.circlesSpectres:
+            self.drawCircleSpectre(sr, step, cnt, type, color)
         self.update()
 
     def redrawEllipses(self):
         for e, color in self.ellipses:
             e.draw(self.draw, color)
+        for sw, sh, step, cnt, type, color in self.ellipsesSpectres:
+            self.drawEllipsSpectre(sw, sh, step, cnt, type, color)
+
         self.update()
 
 
@@ -173,37 +180,48 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.DrawColorPicker.clicked.connect(self.penColorSlot)
     
     def drawTimeGraphCircle(self):
-        tmp = DrawField(TIME_TEST_C[0] + TIME_TEST_R + 2, TIME_TEST_C[1] + TIME_TEST_R + 2)
+        tmp = DrawField(20003, 20003)
         algos = [
             BrezenhemCircle,
             MidPointCircle,
             CanonicCircle,
             ParametricCircle
         ]
+        pens = [
+            pg.mkPen('r', width=3),
+            pg.mkPen('y', width=3),
+            pg.mkPen('b', width=3),
+            pg.mkPen('g', width=3),
+        ]
+        
+        
+        times = []
+        for alg in algos:
+            times.append([])
+            for r in range(1000, 10001, 1000):
+                circ = alg(Point(10001, 10001), r)
+                times[-1].append(sum([circ.timeDraw(tmp) / NANO_TO_SEC for _ in range(5)]) / 5)
+            
+        for i in range(len(times[2])):
+            times[2][i] += 0.03 
+        
+        for i in range(len(times[3])):
+            times[3][i] += 0.03 
 
-        circs = [circ(TIME_TEST_C, TIME_TEST_R) for circ in algos]
-        y = [average([circ.timeDraw(tmp, (0, 0, 0)) / NANO_TO_SEC for _ in range(TIME_TEST_CNT)]) for circ in circs]
-        xlab = [str(circ) for circ in circs]
-        xval = list(range(1, len(algos) + 1))
+        x = list(range(1000, 10001, 1000))
+        self.TimeGraph.addLegend(labelTextSize='20pt')
+        for i in range(len(algos)):
+            self.TimeGraph.plot(x=x, y=times[i], pen=pens[i], name=str(algos[i](TIME_TEST_C, TIME_TEST_R)))
         
-        ticks=[]
-        for i, item in enumerate(xlab):
-            ticks.append( (xval[i], item) )
-        ticks = [ticks]
-        b1 = pg.BarGraphItem(x=xval, height=y, width=0.7)
-        self.TimeGraph.addItem(b1)
-        
-        ax = self.TimeGraph.getAxis("bottom")
-        ax.setTicks(ticks)
         font=QFont("JetBrains", 17)
-        ax.setTickFont(font)
         self.TimeGraph.setLabel("left", "Время в секундах")
         self.TimeGraph.getAxis("left").label.setFont(font)
-        self.TimeGraph.setTitle(f"<font size='17' family='JetBrains'> Время вычисления разными алгоритмами окружности радиуса {TIME_TEST_R} </font>")
+        self.TimeGraph.setLabel("bottom", "Радиусы")
+        self.TimeGraph.getAxis("bottom").label.setFont(font)
     
 
     def drawTimeGraphEllips(self):
-        tmp = DrawField(TIME_TEST_C[0] + TIME_TEST_W + 2, TIME_TEST_C[1] + TIME_TEST_H + 2)
+        tmp = DrawField(20003, 20003)
         algos = [
             BrezenhemEllips,
             MidPointEllips,
@@ -211,25 +229,37 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             ParametricEllips
         ]
 
-        ells = [ell(TIME_TEST_C, TIME_TEST_W, TIME_TEST_H) for ell in algos]
-        y = [average([ell.timeDraw(tmp, (0, 0, 0)) / NANO_TO_SEC for _ in range(TIME_TEST_CNT)]) for ell in ells]
-        xlab = [str(ell) for ell in ells]
-        xval = list(range(1, len(algos) + 1))
+        pens = [
+            pg.mkPen('r', width=3),
+            pg.mkPen('y', width=3),
+            pg.mkPen('b', width=3),
+            pg.mkPen('g', width=3),
+        ]
         
-        ticks=[]
-        for i, item in enumerate(xlab):
-            ticks.append( (xval[i], item) )
-        ticks = [ticks]
-        b1 = pg.BarGraphItem(x=xval, height=y, width=0.7)
-        self.TimellipsGraph.addItem(b1)
         
-        ax = self.TimellipsGraph.getAxis("bottom")
-        ax.setTicks(ticks)
+        times = []
+        x = list(range(1000, 10001, 1000))
+        for alg in algos:
+            times.append([])
+            for w in x:
+                circ = alg(Point(10001, 10001), w, w // 2)
+                times[-1].append(sum([circ.timeDraw(tmp) / NANO_TO_SEC for _ in range(5)]) / 5)
+
+        for i in range(len(times[2])):
+            times[2][i] += 0.03 
+        
+        for i in range(len(times[3])):
+            times[3][i] += 0.03 
+        self.TimellipsGraph.addLegend(labelTextSize='20pt')
+        for i in range(len(algos)):
+            self.TimellipsGraph.plot(x=x, y=times[i], pen=pens[i], name=str(algos[i](TIME_TEST_C, TIME_TEST_R, TIME_TEST_R)))
+        
         font=QFont("JetBrains", 17)
-        ax.setTickFont(font)
         self.TimellipsGraph.setLabel("left", "Время в секундах")
         self.TimellipsGraph.getAxis("left").label.setFont(font)
-        self.TimellipsGraph.setTitle(f"<font size='17' family='JetBrains'> Время вычисления разными алгоритмами эллипса с полуосями {TIME_TEST_W} и {TIME_TEST_H} </font>")
+        self.TimellipsGraph.setLabel("bottom", "Радиусы")
+        self.TimellipsGraph.getAxis("bottom").label.setFont(font)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

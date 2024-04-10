@@ -109,30 +109,21 @@ class BrezenhemEllips(Ellips):
         h = mathRound(self.h)
         sqrh = h * h
         sqrw = w * w
+        sqrs = sqrh * sqrw
 
 
         x = 0
         y = h
         points.extend(self.getSymmetricPixels(x, y))
-        re = sqrh + sqrw * (h - 1) ** 2 - sqrw * sqrh
+        re = sqrh + sqrw * (h - 1) ** 2 - sqrs
         
         while y >= 0:
-            if re < 0:
-                d = re + sqrh * (x + 1) ** 2 - sqrw * sqrh + sqrw * y ** 2
+            if re < 0 and re + sqrh * (x + 1) ** 2 - sqrs + sqrw * y ** 2 < 0:
                 x += 1
-                if d >= 0:
-                    y -= 1
-                    re += 2 * sqrh * x - 2 * sqrw * y + sqrw + sqrh
-                else:
-                    re += 2 * sqrh * x + sqrh
-            elif re > 0:
-                d = re + sqrw * (y - 1) ** 2 - sqrw * sqrh + sqrh * x ** 2
+                re += 2 * sqrh * x + sqrh
+            elif re > 0 and re + sqrw * (y - 1) ** 2 - sqrs + sqrh * x ** 2 > 0:
                 y -= 1
-                if d <= 0:
-                    x += 1
-                    re += 2 * sqrh * x - 2 * sqrw * y + sqrw + sqrh
-                else:
-                    re -= 2 * sqrw * y + sqrw
+                re -= 2 * sqrw * y + sqrw
             else:
                 x += 1
                 y -= 1
@@ -159,10 +150,11 @@ class MidPointEllips(Ellips):
         
         sqrw = self.w ** 2
         sqrh = self.h ** 2
+        sqrs = sqrw * sqrh
         rightx = mathRound(self.w / (m.sqrt(1 + sqrh / sqrw)))
         topy = mathRound(self.h / (m.sqrt(1 + sqrw / sqrh)))
         
-        crit = sqrh + sqrw * (y - 1 / 2) ** 2 - sqrw * sqrh  
+        crit = sqrh + sqrw * (y - 1 / 2) ** 2 - sqrs
 
         for x in range(1, rightx + 1):
             if crit > 0:
@@ -173,7 +165,7 @@ class MidPointEllips(Ellips):
         
         x = mathRound(self.w)
 
-        crit = sqrh * (x - 1 / 2) ** 2  + sqrw - sqrw * sqrh
+        crit = sqrh * (x - 1 / 2) ** 2  + sqrw - sqrs
 
         for y in range(1, topy + 1):
             if crit > 0:
