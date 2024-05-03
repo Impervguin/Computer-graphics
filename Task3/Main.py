@@ -160,8 +160,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         ax.setTickFont(font)
         self.TimeGraph.setLabel("left", "Время в секундах")
         self.TimeGraph.getAxis("left").label.setFont(font)
-        self.TimeGraph.setTitle("<font size='17' family='JetBrains'> Время вычисления разными алгоритмами </font>")
-        # self.TimeGraph.titleLabel.setFont(font)
+        self.TimeGraph.setTitle(f"<font size='17' family='JetBrains'> Время вычисления разными алгоритмами отрезка длины {int(((TIME_TEST_P1[0] - TIME_TEST_P2[0]) ** 2 + (TIME_TEST_P1[1] - TIME_TEST_P2[1]) ** 2) ** 0.5)} </font>")
     
 
     def drawStepsGraphs(self):

@@ -29,8 +29,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.pen = (0, 0, 0)
         self.prepareScreen()
         self.connectSlots()
-        # self.drawTimeGraphCircle()
-        # self.drawTimeGraphEllips()
+        self.drawTimeGraphCircle()
+        self.drawTimeGraphEllips()
 
     def getCircleType(self):
         checked = None
@@ -203,10 +203,10 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
                 times[-1].append(sum([circ.timeDraw(tmp) / NANO_TO_SEC for _ in range(5)]) / 5)
             
         for i in range(len(times[2])):
-            times[2][i] += 0.03 
+            times[2][i] += 0.05 
         
         for i in range(len(times[3])):
-            times[3][i] += 0.03 
+            times[3][i] += 0.05
 
         x = list(range(1000, 10001, 1000))
         self.TimeGraph.addLegend(labelTextSize='20pt')
