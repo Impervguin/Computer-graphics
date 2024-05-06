@@ -8,10 +8,11 @@ import sys
 class MyMainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setGeometry(100, 100, 1000, 1000)
+        self.setGeometry(100, 100, 1000, 800)
         self.draw = DrawField(self, 800, 800)
-        self.draw.setGeometry(100, 100, 800, 800)
-        # p = Polygon((100, 100), (100, 400), (400, 400), (400, 300), (500, 300), (500, 200), (600, 200), (600, 100))
+        self.draw.setGeometry(100, 100, 900, 900)
+        # p = Polygon((100, 100), (100, 400), (799, 400), (799, 200), (700, 200), (700, 300), (600, 300), (500, 300), (500, 200), (400, 200), (400, 100))
+        # p = Polygon((300, 300), (400, 200), (400, 400), (200, 200), (200, 400))
         p = Polygon((1, 1), (1, 7), (5, 3), (8, 6), (8, 1))
         # p = Polygon((1, 7), (5, 3))
         # self.draw.draw_line((100, 100), (300, 250))

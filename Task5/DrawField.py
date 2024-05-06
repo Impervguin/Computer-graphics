@@ -29,25 +29,27 @@ class DrawField(QLabel):
     
     def DrawPolygonWFlag(self, polygon : Polygon, polygonColor: QColor | tuple[int, int, int], delayFlag=False, delay=0.1):
         p = []
+        p = polygon.IntersectionWScan()
+        for x, y in p:
+            self.buffer.setPixel(x, y, qRgb(*self.pen))
+            if delayFlag:
+                self.Update()
+                self.sleep(delay)
+        
+        
         for y in range(*polygon.YRange()):
-            for x in (polygon.IntersectionWScan(y)):
-                p.append(Point(x, y))
-                # print(x, y)
-        #         self.buffer.setPixel(x, y, qRgb(*self.pen))
-        # p = polygon.IntersectionWScan(0)
-        print(*sorted(p, key=lambda x: x[0]), sep="\n")
-        
-        
-        # for y in range(*polygon.YRange()):
-        #     pixelFlag = False
-        #     for x in range(*polygon.XRange()):
-        #         if self.buffer.pixel(x, y) == qRgb(*self.pen):
-        #             pixelFlag = not pixelFlag
+            pixelFlag = False
+            for x in range(*polygon.XRange()):
+                if self.buffer.pixel(x, y) == qRgb(*self.pen):
+                    pixelFlag = not pixelFlag
 
-        #         if pixelFlag:
-        #             self.buffer.setPixel(x, y, qRgb(*polygonColor))
-        #         else:
-        #             self.buffer.setPixel(x, y, qRgb(*self.background))
+                if pixelFlag:
+                    self.buffer.setPixel(x, y, qRgb(*polygonColor))
+                else:
+                    self.buffer.setPixel(x, y, qRgb(*self.background))
+                if delayFlag:
+                    self.Update()
+                    self.sleep(delay)
         
 
 

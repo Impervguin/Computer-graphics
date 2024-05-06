@@ -1,6 +1,6 @@
 from Point import *
-from Funcs import mathRound
-
+from Funcs import *
+from math import ceil
 
 class Polygon:
     def __init__(self, *points):
@@ -16,43 +16,36 @@ class Polygon:
         return min(p[0] for p in self.points), max(p[0] for p in self.points) + 1
 
     def YRange(self):
-        return min(p[1] for p in self.points), max(p[1] for p in self.points) + 1
+        return min(p[1] for p in self.points), max(p[1] for p in self.points)
     
-    def IntersectionWScan(self, y):
+    def IntersectionWScan(self):
         pixels = []
-        i = -1
-        while i < len(self) - 1:
-            # p1, p2 = self[i], self[i + 1]
-            # if (p1[1] == p2[1]):
-            #     i += 1
-            #     continue
-            # dx = (p2[0] - p1[0]) / abs(p2[1] - p1[1])
-            # # print(dx)
-            # j = 0
-            # # print(f"{p1}, {p2}:")
-            # for y in range(p1[1], p2[1], 1 if p1[1] < p2[1] else -1):
-            #     x = mathRound(p1[0] + dx * j)
-            #     # print(x)
-            #     pixels.append((x, y))
-            #     j += 1
-            # i += 1
+        for i in range(-1, len(self.points) - 1):
+            p1 = self.points[i]
+            p2 = self.points[i + 1]
+            min_y = min(p1[1], p2[1])
+            max_y = max(p1[1], p2[1])
+            x = p1[0]
+            if (p1[1] > p2[1]):
+                x = p2[0]
+            if (p1[1] == p2[1]):
+                continue
+            a_side, b_side, c_side = line_koefs(p1[0], p1[1], p2[0], p2[1])
+            for y in range(min_y, max_y):
+                a_scan_line, b_scan_line, c_scan_line = line_koefs(x, y, x + 1, y)
 
-            p1, p2 = self[i], self[i + 1]
-            if max(p1[1], p2[1]) < y or min(p1[1], p2[1]) > y:
-                i += 1
-                continue
-            if p1[1] == p2[1]:
-                i += 1
-                continue
-            if (p2[1] == y):
-                if max(self[i - 1], self[i + 1])[1] > p2[1] and min(self[i - 1], self[i + 1])[1] < p2[1]:
-                    pixels.append(p2[0])
-                i += 2
-                continue
-
-            x = int(p1[0] + (p2[0] - p1[0]) * (y - p1[1]) / (p2[1] - p1[1]))
-            # if x >= min(p1[0], p2[0]) and x <= max(p1[0], p2[0]):
-            pixels.append(x)
-            i += 1
+                x_intersec, _ = solve_lines_intersection(a_side, b_side, c_side, a_scan_line, b_scan_line, c_scan_line)
+                x_ = int(x_intersec + 0.5)
+                if ((x_,y) in pixels):
+                    del pixels[pixels.index((x_, y))]
+                    # x_ += 1
+                else:
+                    pixels.append((x_, y))
+                
         return pixels
 
+
+if __name__ == "__main__":
+    p = Polygon((1, 1), (1, 7), (5, 3), (8, 6), (8, 1))
+    p = p.IntersectionWScan()
+    print(*sorted(p, key=lambda x: x[0]), sep="\n")
