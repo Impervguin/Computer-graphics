@@ -31,5 +31,10 @@ class Point:
     def copy(self):
         return Point(self.x, self.y)
     
+    def __eq__(self, value: object) -> bool:
+        if value[0] == self.x and value[1] == self.y:
+            return True
+        return False
+    
 # if __name__ == "__main__":
     # print(*Point(10, 20))

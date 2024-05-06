@@ -37,12 +37,42 @@ class Polygon:
                 x_intersec, _ = solve_lines_intersection(a_side, b_side, c_side, a_scan_line, b_scan_line, c_scan_line)
                 x_ = int(x_intersec + 0.5)
                 if ((x_,y) in pixels):
-                    del pixels[pixels.index((x_, y))]
                     # x_ += 1
+                    del pixels[pixels.index((x_, y))]
                 else:
                     pixels.append((x_, y))
                 
         return pixels
+    
+    def IntersectionWScanWOtherPixels(self, pixels):
+        for i in range(-1, len(self.points) - 1):
+            p1 = self.points[i]
+            p2 = self.points[i + 1]
+            min_y = min(p1[1], p2[1])
+            max_y = max(p1[1], p2[1])
+            x = p1[0]
+            if (p1[1] > p2[1]):
+                x = p2[0]
+            if (p1[1] == p2[1]):
+                continue
+            a_side, b_side, c_side = line_koefs(p1[0], p1[1], p2[0], p2[1])
+            for y in range(min_y, max_y):
+                a_scan_line, b_scan_line, c_scan_line = line_koefs(x, y, x + 1, y)
+
+                x_intersec, _ = solve_lines_intersection(a_side, b_side, c_side, a_scan_line, b_scan_line, c_scan_line)
+                x_ = int(x_intersec + 0.5)
+                if ((x_,y) in pixels):
+                    del pixels[pixels.index((x_, y))]
+                else:
+                    pixels.append((x_, y))
+                
+        return pixels
+
+    def AddPoint(self, p : Point):
+        self.points.append(p)
+    
+    def Pop(self):
+        return self.points.pop()
 
 
 if __name__ == "__main__":
