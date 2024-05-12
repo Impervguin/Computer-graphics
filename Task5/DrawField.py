@@ -4,6 +4,7 @@ from Point import Point
 from Polygon import Polygon
 from Funcs import mathRound
 from time import sleep
+from collections import deque
 
 TmpBorderColor1 = (100, 100, 100)
 TmpBorderColor2 = (150, 150, 150)

@@ -19,7 +19,6 @@ def average(lst):
         return 0
     return sum(lst) / len(lst)
 
-# коэффициенты прямой
 def line_koefs(x1, y1, x2, y2):
     a = y1 - y2
     b = x2 - x1
@@ -27,8 +26,6 @@ def line_koefs(x1, y1, x2, y2):
 
     return a, b, c
 
-
-# точка пересечения прямых
 def solve_lines_intersection(a1, b1, c1, a2, b2, c2):
     opr = a1 * b2 - a2 * b1
     opr1 = (-c1) * b2 - b1 * (-c2)

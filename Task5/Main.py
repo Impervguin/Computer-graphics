@@ -11,7 +11,7 @@ from time import time_ns
 BACKGROUND_COLOR = (255, 255, 255)
 EDGE_COLOR = (0, 0, 0)
 DEFAULT_COLOR = (100, 0, 100)
-APP_FONT = QtGui.QFont("JetBrains", 13)
+APP_FONT = QtGui.QFont("JetBrains", 16)
 DRAW_DELAY = 10 # milliseconds
 
 
@@ -30,6 +30,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.DrawGenerator = None
         self.PolygonPen = DEFAULT_COLOR
         self.LastPointMouseEvent = None
+        self.Drawing = False
 
         self.setColor(self.PolygonPen)
         self.prepareDrawField()
@@ -43,58 +44,60 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.DrawLabel.Clear()
     
     def mousePressEvent(self, a0: QtGui.QMouseEvent | None) -> None:
-        if self.DrawLabel.IsPosInside(a0.x(), a0.y()):
-            if len(self.CurrentPolynomAdd) != 0:
+        if not self.Drawing:
+            if self.DrawLabel.IsPosInside(a0.x(), a0.y()):
+                if len(self.CurrentPolynomAdd) != 0:
+                    if self.LastPointMouseEvent is not None:
+                        self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
+                        self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
+                    self.LastPointMouseEvent = Point(a0.x(), a0.y())
+                    self.DrawLabel.DrawLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
+                    self.DrawLabel.DrawLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
+                    self.DrawLabel.Update()
+            else:
                 if self.LastPointMouseEvent is not None:
                     self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
                     self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
-                self.LastPointMouseEvent = Point(a0.x(), a0.y())
-                self.DrawLabel.DrawLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
-                self.DrawLabel.DrawLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
-                self.DrawLabel.Update()
-        else:
-            if self.LastPointMouseEvent is not None:
-                self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
-                self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
-            self.LastPointMouseEvent = None
+                self.LastPointMouseEvent = None
 
         return super().mouseMoveEvent(a0)
     
     def mouseMoveEvent(self, a0: QtGui.QMouseEvent | None) -> None:
-        if self.DrawLabel.IsPosInside(a0.x(), a0.y()):
-            if len(self.CurrentPolynomAdd) != 0:
+        if not self.Drawing:
+            if self.DrawLabel.IsPosInside(a0.x(), a0.y()):
+                if len(self.CurrentPolynomAdd) != 0:
+                    if self.LastPointMouseEvent is not None:
+                        self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
+                        self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
+                    self.LastPointMouseEvent = Point(a0.x(), a0.y())
+                    self.DrawLabel.DrawLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
+                    self.DrawLabel.DrawLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
+                    self.DrawLabel.Update()
+            else:
                 if self.LastPointMouseEvent is not None:
                     self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
                     self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
-                self.LastPointMouseEvent = Point(a0.x(), a0.y())
-                self.DrawLabel.DrawLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
-                self.DrawLabel.DrawLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
-                self.DrawLabel.Update()
-        else:
-            if self.LastPointMouseEvent is not None:
-                self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[-1], self.LastPointMouseEvent)
-                self.DrawLabel.DrawBackgroundLine(self.CurrentPolynomAdd[0], self.LastPointMouseEvent)
-            self.LastPointMouseEvent = None
+                self.LastPointMouseEvent = None
 
         return super().mouseMoveEvent(a0)
 
     def mouseReleaseEvent(self, a0: QtGui.QMouseEvent | None) -> None:
-        if self.DrawLabel.IsPosInside(a0.x(), a0.y()) and a0.button() == QtCore.Qt.MouseButton.LeftButton:
-            # self.CurrentPolynomAdd.AddPoint(Point(a0.x(), a0.y()))
-            self.addPoint(Point(a0.x(), a0.y()))
-            self.clearScreenSlot()
-            self.redrawPolygonEdges()
-        if self.DrawLabel.IsPosInside(a0.x(), a0.y()) and a0.button() == QtCore.Qt.MouseButton.RightButton:
-            self.closePolygon()
-            self.clearScreenSlot()
-            self.redrawPolygonEdges()
-        self.LastPointMouseEvent = None
+        if not self.Drawing:
+            if self.DrawLabel.IsPosInside(a0.x(), a0.y()) and a0.button() == QtCore.Qt.MouseButton.LeftButton:
+                # self.CurrentPolynomAdd.AddPoint(Point(a0.x(), a0.y()))
+                self.addPoint(Point(a0.x(), a0.y()))
+                self.clearScreenSlot()
+                self.redrawPolygonEdges()
+            if self.DrawLabel.IsPosInside(a0.x(), a0.y()) and a0.button() == QtCore.Qt.MouseButton.RightButton:
+                self.closePolygon()
+                self.clearScreenSlot()
+                self.redrawPolygonEdges()
+            self.LastPointMouseEvent = None
         return super().mouseReleaseEvent(a0)
 
     def connectButtons(self):
         self.FillPolygonButton.clicked.connect(self.startDrawingSlot)
         self.StopFillButton.clicked.connect(self.stopDrawing)
-        self.ClearScreenButton.clicked.connect(self.clearScreenSlot)
         self.ClearPointsButton.clicked.connect(self.clearPolygonSlot)
         self.ColorPickButton.clicked.connect(self.pickColor)
         self.AddButton.clicked.connect(self.addPointSlot)
@@ -112,6 +115,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.RealTimeBox.setEnabled(True)
         self.DrawStartTime = time_ns()
         self.DrawTimer.start()
+        self.Drawing = True
 
     def stopDrawing(self):
         self.DrawTimer.stop()
@@ -122,7 +126,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.RealTimeBox.setEnabled(False)
         for p in self.Polynoms:
             self.DrawLabel.DrawPolygonEdges(p)
-
+        self.Drawing = False
         msg = QMessageBox()
         msg.setWindowTitle("Время выполнения")
         msg.setText(f"Время выполнения: {exec_time_s} секунд {exec_time_ms} миллисекунд")
